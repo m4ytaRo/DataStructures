@@ -22,6 +22,7 @@ private:
     Node* tail;
 public:
     XORLinkedList() : head(nullptr), tail(nullptr) {};
+    ~XORLinkedList();
     XORLinkedList(XORLinkedList&& list) = delete;
     XORLinkedList(const XORLinkedList& list) = delete;
     XORLinkedList& operator=(XORLinkedList&& list) = delete;
@@ -46,6 +47,19 @@ typename XORLinkedList<T>::Node* XORLinkedList<T>::getXorProduct(typename XORLin
     Thus, we use uintptr_t - type, which is designed to store pointers as integer values
     At the end we cast value back to Node pointer
     */
+}
+
+template <class T>
+XORLinkedList<T>::~XORLinkedList() {
+    Node* ptr = head;
+    Node* ptrPrev = nullptr;
+    while (ptr) {
+        Node* next = getXorProduct(ptr->xorProduct, ptrPrev);
+        delete ptrPrev;
+        ptrPrev = ptr;
+        ptr = next;
+    }
+    delete ptrPrev;
 }
 
 template <class T>
