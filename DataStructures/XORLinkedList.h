@@ -2,6 +2,7 @@
 #define XORLINKED_LIST_H
 
 #include <cstdint>
+#include <ostream>
 
 template <class T>
 class XORLinkedList
@@ -12,8 +13,13 @@ private:
         Node* xorProduct;
         Node(const T& data, Node* xorProduct = nullptr) {};
     };
+
+    template <class U>
+    friend std::ostream& operator << (std::ostream& out, const XORLinkedList<U>& list);
+
     Node* getXorProduct(Node* a, Node* b);
     Node* head;
+    Node* tail;
 public:
     XORLinkedList() : head(nullptr) {};
     XORLinkedList(XORLinkedList&& list) = delete;
@@ -21,8 +27,13 @@ public:
     XORLinkedList& operator=(XORLinkedList&& list) = delete;
     XORLinkedList& operator=(const XORLinkedList& list) = delete;
 
-    void insert(const T& data);
-    void remove();
+    bool insert(const T& data, int positionIndex);
+    void push_back(const T& data);
+    void push_front(const T& data);
+    void pop_back();
+    void pop_front();
+    T& front();
+    T& back();
     void remove(const T& data, int number);
 };
 
@@ -37,17 +48,47 @@ typename XORLinkedList<T>::Node* XORLinkedList<T>::getXorProduct(typename XORLin
 }
 
 template <class T>
-void XORLinkedList<T>::insert(const T& data) {
+bool XORLinkedList<T>::insert(const T& data, int positionIndex) {
 
 }
 
 template <class T>
-void XORLinkedList<T>::remove() {
+void XORLinkedList<T>::push_back(const T& data) {
+
+}
+
+template <class T>
+void XORLinkedList<T>::push_front(const T& data) {
+
+}
+
+template <class T>
+void XORLinkedList<T>::pop_front() {
+
+}
+
+template <class T>
+void XORLinkedList<T>::pop_back() {
+
+}
+
+template <class T>
+T& XORLinkedList<T>::front() {
+    
+}
+
+template <class T>
+T& XORLinkedList<T>::back() {
 
 }
 
 template <class T>
 void XORLinkedList<T>::remove(const T& data, int number) {
 
+}
+
+template <class T>
+std::ostream& operator << (std::ostream& out, const XORLinkedList<T>& list) {
+    
 }
 #endif
