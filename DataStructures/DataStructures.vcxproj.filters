@@ -18,12 +18,12 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="XORLinkedList.cpp">
+    <ClCompile Include="HashSet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="XORLinkedList.h">
+    <ClInclude Include="HashSet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
