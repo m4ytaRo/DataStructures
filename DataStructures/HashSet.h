@@ -1,6 +1,8 @@
 #ifndef HASHSET_H
 #define HASHSET_H
 
+#include <stdexcept>
+
 template <typename Key>
 class HashSet
 {
@@ -56,26 +58,31 @@ public:
     }
 
     bool insert(double key) {
-        size_t pos = calculateHash(key, size_);;
-        for (int i = 0; i < size_/2; ++i) {
-            pos = quadraticProbe1(pos, i, size_);
-            if (*table_[pos].key_ == key)
-                return false;
-            if (!table_[pos].key_ || table_[pos].isDeleted_) {
-                if (!table_[pos].key_)
-                    table_[pos].key_ = new double(key);
-                else {
-                    *table_[pos].key_ = key;
+        if (number_ >= size_ * 0.7)
+            rehash();
+        const size_t initialHash = calculateHash(key, size_);
+        for (int globalAttempt = 0; globalAttempt < 5; ++globalAttempt) {
+            size_t pos = initialHash;
+            for (int i = 0; i < size_ / 2; ++i) {
+                pos = quadraticProbe1(pos, i, size_);
+                if (table_[pos].key_ && *table_[pos].key_ == key)
+                    return false;
+                if (!table_[pos].key_ || table_[pos].isDeleted_) {
+                    if (table_[pos].isDeleted_) {
+                        delete table_[pos].key_;
+                    }
+                    table_[pos].key_ = new double (key);
                     table_[pos].isDeleted_ = false;
+                    ++number_;
+                    return true;
                 }
-                ++number_;
-                return true;
             }
+            rehash();
+
         }
 
-        rehash();
-        insert(key);
-        return true;
+        throw std::runtime_error("Unexpected error while inserting element");
+        return false;
 
     }
 };
