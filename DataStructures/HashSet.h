@@ -26,6 +26,8 @@ private:
         return (hash + attempt * attempt) % capacity;
     }
 
+
+
     struct Line {
         Key* key_ = nullptr;
         bool isDeleted_ = false;
@@ -35,8 +37,12 @@ private:
     Line* table_;
 
 public:
-    static int calculateHash(const Key value, int k) {
-        return value * k;
+    static size_t calculateHash(const Key& value, size_t capacity) {
+        throw std::runtime_error("Unsupported key type");
+    }
+
+    static size_t calculateHash(double value, size_t capacity) {
+        return value * capacity;
     }
     HashSet() : size_(100), table_(new Line[100]) {};
     HashSet(size_t size, bool makePrime = false) : size_(size) {
