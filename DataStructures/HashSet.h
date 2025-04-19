@@ -2,8 +2,22 @@
 #define HASHSET_H
 
 #include <stdexcept>
+#include <type_traits> //for SFINAE in class with using IsCorrectType
 
-template <typename Key>
+namespace mutils {
+    template <typename T>
+    struct IsCorrectType : std::false_type {};
+
+    template <>
+    struct IsCorrectType<double> : std::true_type {};
+
+    //It was not my task
+    //template <>
+    //struct IsCorrectType<std::string> : std::true_type {};
+}
+
+
+template <typename Key, typename = std::enable_if_t<mutils::IsCorrectType<Key>::value>>
 class HashSet
 {
 
