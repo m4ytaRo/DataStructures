@@ -40,7 +40,6 @@ public:
     static size_t calculateHash(const Key& value, size_t capacity) {
         throw std::runtime_error("Unsupported key type");
     }
-
     static size_t calculateHash(double value, size_t capacity) {
         return value * capacity;
     }
@@ -64,7 +63,7 @@ public:
     }
 
     void rehash() {
-
+        
     }
 
     bool insert(Key key) {
@@ -96,5 +95,6 @@ public:
 
     }
 };
+
 
 #endif
