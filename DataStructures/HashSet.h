@@ -13,8 +13,12 @@ template<>
 class HashSet<double> {
 
 private:
-    static size_t quadraticProbe(size_t hash, size_t attempt, size_t capacity) {
-        return (hash + ((attempt % 2 == 0) ? -1 : 1) * (attempt * attempt) / 2) % capacity;
+    static size_t quadraticProbe1(size_t hash, size_t attempt, size_t capacity) {
+        return (hash + attempt * attempt) % capacity;
+    }
+
+    static size_t quadraticProbe2(size_t hash, size_t attempt, size_t capacity) {
+        return (hash + 2 * attempt * attempt) % capacity; 
     }
     struct Line {
         double* key_ = nullptr;
@@ -30,11 +34,10 @@ public:
     }
     HashSet() : size_(100), table_(new Line[100]) {};
     HashSet(size_t size, bool makePrime = false) : size_(size) {
-        if (!makePrime) {
-            table_ = new Line[size];
-            return;
-        }
-        table_ = new Line[((size % 3 == 0) ? size + 1 : size) * 4 + 3];
+        if (makePrime) 
+            size = ((size % 3 == 0) ? size + 1 : size) * 4 + 3;
+        table_ = new Line[size];
+        
     }
     ~HashSet() noexcept {
         delete[] table_;
@@ -48,7 +51,33 @@ public:
         return number_;
     }
 
+    void rehash() {
+        
+    }
 
+    bool insert(double key) {
+        size_t pos = calculateHash(key, size_);;
+        for (int i = 0; i < size_/2; ++i) {
+            pos = quadraticProbe1(pos, i, size_);
+            if (*table_[pos].key_ == key)
+                return false;
+            if (!table_[pos].key_ || table_[pos].isDeleted_) {
+                if (!table_[pos].key_)
+                    table_[pos].key_ = new double(key);
+                else {
+                    *table_[pos].key_ = key;
+                    table_[pos].isDeleted_ = false;
+                }
+                ++number_;
+                return true;
+            }
+        }
+
+        rehash();
+        insert(key);
+        return true;
+
+    }
 };
 
 #endif
