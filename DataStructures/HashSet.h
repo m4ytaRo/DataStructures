@@ -22,13 +22,10 @@ class HashSet
 {
 
 private:
-    static size_t quadraticProbe1(size_t hash, size_t attempt, size_t capacity) {
+    static size_t quadraticProbe(size_t hash, size_t attempt, size_t capacity) {
         return (hash + attempt * attempt) % capacity;
     }
 
-    static size_t quadraticProbe2(size_t hash, size_t attempt, size_t capacity) {
-        return (hash + 2 * attempt * attempt) % capacity;
-    }
     struct Line {
         Key* key_ = nullptr;
         bool isDeleted_ = false;
@@ -71,7 +68,7 @@ public:
         for (int globalAttempt = 0; globalAttempt < 5; ++globalAttempt) {
             size_t pos = initialHash;
             for (int i = 0; i < size_ / 2; ++i) {
-                pos = quadraticProbe1(pos, i, size_);
+                pos = quadraticProbe(pos, i, size_);
                 if (table_[pos].key_ && *table_[pos].key_ == key)
                     return false;
                 if (!table_[pos].key_ || table_[pos].isDeleted_) {
