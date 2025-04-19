@@ -6,13 +6,6 @@
 template <typename Key>
 class HashSet
 {
-    static_assert(
-        sizeof(Key) == 0, "Unsupported key type.\n"
-        );
-};
-
-template<>
-class HashSet<double> {
 
 private:
     static size_t quadraticProbe1(size_t hash, size_t attempt, size_t capacity) {
@@ -20,10 +13,10 @@ private:
     }
 
     static size_t quadraticProbe2(size_t hash, size_t attempt, size_t capacity) {
-        return (hash + 2 * attempt * attempt) % capacity; 
+        return (hash + 2 * attempt * attempt) % capacity;
     }
     struct Line {
-        double* key_ = nullptr;
+        Key* key_ = nullptr;
         bool isDeleted_ = false;
     };
     size_t size_;
@@ -31,15 +24,15 @@ private:
     Line* table_;
 
 public:
-    static int calculateHash(double value, int k) {
+    static int calculateHash(const Key value, int k) {
         return value * k;
     }
     HashSet() : size_(100), table_(new Line[100]) {};
     HashSet(size_t size, bool makePrime = false) : size_(size) {
-        if (makePrime) 
+        if (makePrime)
             size = ((size % 3 == 0) ? size + 1 : size) * 4 + 3;
         table_ = new Line[size];
-        
+
     }
     ~HashSet() noexcept {
         delete[] table_;
@@ -49,15 +42,15 @@ public:
     HashSet& operator= (HashSet&& hashSet) = delete;
     HashSet& operator= (const HashSet& hashSet) = delete;
 
-    size_t getNumber() const noexcept{
+    size_t getNumber() const noexcept {
         return number_;
     }
 
     void rehash() {
-        
+
     }
 
-    bool insert(double key) {
+    bool insert(Key key) {
         if (number_ >= size_ * 0.7)
             rehash();
         const size_t initialHash = calculateHash(key, size_);
@@ -71,7 +64,7 @@ public:
                     if (table_[pos].isDeleted_) {
                         delete table_[pos].key_;
                     }
-                    table_[pos].key_ = new double (key);
+                    table_[pos].key_ = new Key(key);
                     table_[pos].isDeleted_ = false;
                     ++number_;
                     return true;
