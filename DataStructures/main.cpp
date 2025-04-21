@@ -3,7 +3,7 @@
 #include <unordered_set>
 
 int main() {
-    HashSet<double> hashSet;
-    std::unordered_set<int> set;
+    HashSet<double> hashSet (18, true);
+    std::cout << hashSet.getSize();
     return 0;
 }
