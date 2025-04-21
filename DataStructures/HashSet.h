@@ -5,7 +5,6 @@
 #include <type_traits> //for SFINAE in class with using IsCorrectType
 #include <limits> 
 
-#include <iostream>
 
 
 namespace mutils {
@@ -42,6 +41,7 @@ private:
     }
 
     struct Line {
+        ~Line() { delete key_; }
         Key* key_ = nullptr;
         bool isDeleted_ = false;
     };
@@ -128,7 +128,6 @@ public:
     }
 
     void rehash() {
-        std::cout << "Rehashing\n";
         Line* newTable = nullptr;
         for (int attempt = 0; attempt < 5; ++attempt) {
             //global attempts to rehash
@@ -159,28 +158,25 @@ public:
                     }
 
                 }
-                //if we didnt find position for at least one object, we need to rehash
-                if (!flagPositionFound) {
+                if (!flagPositionFound) { //if we didnt find position for at least one object, we need to rehash
                     flagSuccessfullyTransitioned = false;
                     break;
                 }
-                
             }
-
             if (flagSuccessfullyTransitioned) {
                 delete[] table_;
                 table_ = newTable;
                 size_ = newSize;
-                break;
+                return;
             }
 
         }
         delete[] newTable;
-
+        throw std::runtime_error("Unexpected error while rehashing\n");
     }
 
     bool insert(Key key) {
-        if (number_ >= size_ * LOAD_FACTOR)
+        if (number_ + 1 >= size_ * LOAD_FACTOR)
             rehash();
         const size_t initialHash = calculateHash(key, size_);
         for (int globalAttempt = 0; globalAttempt < 5; ++globalAttempt) {
