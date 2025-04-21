@@ -1,13 +1,25 @@
 #include <iostream>
 #include "HashSet.h"
 #include <unordered_set>
+#include <random>
 
 int main() {
-    HashSet<double> hashSet (100);
-    std::cout << hashSet.getSize();
-    hashSet.insert(0.1);
+    HashSet<double> hashSet (1);
+
+    std::random_device rd;                      
+    std::mt19937 gen(rd());                     
+    std::uniform_real_distribution<> dist(0.0, 1.0);
+
+    std::cout << hashSet.getSize() << '\n';
+    hashSet.insert(dist(gen));
+    hashSet.insert(dist(gen));
+    hashSet.insert(dist(gen));
+    hashSet.insert(dist(gen));
+    //hashSet.insert(dist(gen));
+
+
     for (auto i : hashSet) {
-        std::cout << i;
+        std::cout << i << '\n';
     }
     return 0;
 }

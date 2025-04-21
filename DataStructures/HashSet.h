@@ -5,6 +5,8 @@
 #include <type_traits> //for SFINAE in class with using IsCorrectType
 #include <limits> 
 
+#include <iostream>
+
 
 namespace mutils {
     template <typename T>
@@ -24,6 +26,7 @@ class HashSet
 {
 
 private:
+    static constexpr float LOAD_FACTOR = 0.75f;
     static constexpr unsigned short int smallPrimes[] = {
         5, 11, 17, 23, 37, 53, 79, 97, 131, 193,
         257, 389, 521, 769, 1031, 1543, 2053, 3079,
@@ -125,6 +128,7 @@ public:
     }
 
     void rehash() {
+        std::cout << "Rehashing\n";
         Line* newTable = nullptr;
         for (int attempt = 0; attempt < 5; ++attempt) {
             //global attempts to rehash
@@ -176,7 +180,7 @@ public:
     }
 
     bool insert(Key key) {
-        if (number_ >= size_ * 0.7)
+        if (number_ >= size_ * LOAD_FACTOR)
             rehash();
         const size_t initialHash = calculateHash(key, size_);
         for (int globalAttempt = 0; globalAttempt < 5; ++globalAttempt) {
