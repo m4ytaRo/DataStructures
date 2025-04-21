@@ -209,8 +209,8 @@ public:
         size_t pos = initialHash;
         for (size_t i = 0; i < size_; ++i) {
             pos = quadraticProbe(pos, i, size_);
-            if (table_[i].key_ && key == *table_[i].key_) {
-                if (!table_[i].isDeleted_)
+            if (table_[pos].key_ && key == *table_[pos].key_) {
+                if (!table_[pos].isDeleted_)
                     return true;
                 return false;
             }
@@ -224,9 +224,9 @@ public:
         size_t pos = initialHash;
         for (size_t i = 0; i < size_; ++i) {
             pos = quadraticProbe(pos, i, size_);
-            if (table_[i].key_ && key == *table_[i].key_) {
-                if (!table_[i].isDeleted_) {
-                    table_[i].isDeleted_ = true;
+            if (table_[pos].key_ && key == *table_[pos].key_) {
+                if (!table_[pos].isDeleted_) {
+                    table_[pos].isDeleted_ = true;
                     return true;
                 }
                     
