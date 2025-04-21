@@ -3,6 +3,7 @@
 
 #include <stdexcept>
 #include <type_traits> //for SFINAE in class with using IsCorrectType
+#include <limits> 
 
 
 namespace mutils {
@@ -23,6 +24,16 @@ class HashSet
 {
 
 private:
+    static constexpr unsigned short int smallPrimes[] = {
+        5, 11, 17, 23, 37, 53, 79, 97, 131, 193,
+        257, 389, 521, 769, 1031, 1543, 2053, 3079,
+        4099, 6151, 8209, 12289, 16381, 24593, 32771, 49157, 65521
+    };
+    static constexpr unsigned int largePrimes[] = {
+            131101, 262147, 524309, 1048583,
+            2097169, 4194319, 8388617, 16777259
+    };
+
     static size_t quadraticProbe(size_t hash, size_t attempt, size_t capacity) {
         return (hash + 0.5 * attempt + 0.5 * attempt * attempt) % capacity;
     }
@@ -36,12 +47,28 @@ private:
     Line* table_;
 
 public:
+
     static size_t calculateHash(const Key& value, size_t capacity) {
         throw std::runtime_error("Unsupported key type");
     }
     static size_t calculateHash(double value, size_t capacity) {
         return value * capacity;
     }
+
+    size_t getNextSize() {
+        for (const size_t i : smallPrimes) {
+            if (i > size_)
+                return i;
+        }
+        for (const size_t i : largePrimes) {
+            if (i > size_)
+                return i;
+        }
+        if (size_ > (std::numeric_limits<size_t>::max() - 1) / 2)
+            throw std::overflow_error("Hash table size overflow");
+        return size_ * 2 + 1;
+    }
+
     HashSet() : size_(100), table_(new Line[100]) {};
     HashSet(size_t size, bool makePrime = false) : size_(size) {
         if (makePrime)
