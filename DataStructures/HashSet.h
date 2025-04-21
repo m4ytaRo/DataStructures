@@ -55,24 +55,24 @@ public:
         return value * capacity;
     }
 
-    size_t getNextSize() {
+    size_t getNextSize(size_t size) {
         for (const size_t i : smallPrimes) {
-            if (i > size_)
+            if (i > size)
                 return i;
         }
         for (const size_t i : largePrimes) {
-            if (i > size_)
+            if (i > size)
                 return i;
         }
-        if (size_ > (std::numeric_limits<size_t>::max() - 1) / 2)
+        if (size > (std::numeric_limits<size_t>::max() - 1) / 2)
             throw std::overflow_error("Hash table size overflow");
-        return size_ * 2 + 1;
+        return size * 2 + 1;
     }
 
     HashSet() : size_(100), table_(new Line[100]) {};
     HashSet(size_t size, bool makePrime = true) : size_(size) {
         if (makePrime)
-            size_ = getNextSize();
+            size_ = getNextSize(size_);
         table_ = new Line[size_];
 
     }
@@ -93,7 +93,54 @@ public:
     }
 
     void rehash() {
-        
+        Line* newTable = nullptr;
+        for (int attempt = 0; attempt < 5; ++attempt) {
+            //global attempts to rehash
+            size_t newSize = size_;
+            newSize = getNextSize(newSize);
+            delete[] newTable;
+            newTable = new Line[newSize];
+
+            bool flagSuccessfullyTransitioned = true;
+
+            for (int i = 0; i < size_; ++i) { //going through all previous table
+                if (!table_[i].key_)
+                    continue;
+                const size_t initialHash = calculateHash(*table_[i].key_, newSize);
+                size_t pos = initialHash;
+                bool flagPositionFound = false;
+                for (size_t j = 0; j < newSize; ++j) {  //trying to calculate hash exactly newSize times
+                    
+                    pos = quadraticProbe(pos, j, newSize);
+                    if (!newTable[pos].key_ || newTable[pos].isDeleted_) {
+                        if (newTable[pos].isDeleted_) {
+                            delete newTable[pos].key_;
+                        }
+                        newTable[pos].key_ = new Key(*table_[i].key_);
+                        newTable[pos].isDeleted_ = false;
+                        flagPositionFound = true;
+                        break;
+                    }
+
+                }
+                //if we didnt find position for at least one object, we need to rehash
+                if (!flagPositionFound) {
+                    flagSuccessfullyTransitioned = false;
+                    break;
+                }
+                
+            }
+
+            if (flagSuccessfullyTransitioned) {
+                delete[] table_;
+                table_ = newTable;
+                size_ = newSize;
+                break;
+            }
+
+        }
+        delete[] newTable;
+
     }
 
     bool insert(Key key) {
@@ -102,7 +149,7 @@ public:
         const size_t initialHash = calculateHash(key, size_);
         for (int globalAttempt = 0; globalAttempt < 5; ++globalAttempt) {
             size_t pos = initialHash;
-            for (int i = 0; i < size_ / 2; ++i) {
+            for (int i = 0; i < size_; ++i) {
                 pos = quadraticProbe(pos, i, size_);
                 if (table_[pos].key_ && *table_[pos].key_ == key)
                     return false;
