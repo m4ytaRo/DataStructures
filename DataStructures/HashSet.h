@@ -72,7 +72,7 @@ public:
     HashSet() : size_(100), table_(new Line[100]) {};
     HashSet(size_t size, bool makePrime = false) : size_(size) {
         if (makePrime)
-            size = ((size % 3 == 0) ? size + 1 : size) * 4 + 3;
+            size = getNextSize();
         table_ = new Line[size];
 
     }
