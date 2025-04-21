@@ -175,7 +175,7 @@ public:
         throw std::runtime_error("Unexpected error while rehashing\n");
     }
 
-    bool insert(Key key) {
+    bool insert(const Key& key) {
         if (number_ + 1 >= size_ * LOAD_FACTOR)
             rehash();
         const size_t initialHash = calculateHash(key, size_);
@@ -204,17 +204,35 @@ public:
 
     }
 
-    bool operator[] (double value) {
-        const size_t initialHash = calculateHash(value, size_);
+    bool operator[] (const Key& key) {
+        const size_t initialHash = calculateHash(key, size_);
         size_t pos = initialHash;
         for (size_t i = 0; i < size_; ++i) {
             pos = quadraticProbe(pos, i, size_);
-            if (table_[i].key_ && value == *table_[i].key_) {
-                if (!table_[i].isDeleted)
+            if (table_[i].key_ && key == *table_[i].key_) {
+                if (!table_[i].isDeleted_)
                     return true;
                 return false;
             }
                 
+        }
+        return false;
+    }
+
+    bool remove(const Key& key) {
+        const size_t initialHash = calculateHash(key, size_);
+        size_t pos = initialHash;
+        for (size_t i = 0; i < size_; ++i) {
+            pos = quadraticProbe(pos, i, size_);
+            if (table_[i].key_ && key == *table_[i].key_) {
+                if (!table_[i].isDeleted_) {
+                    table_[i].isDeleted_ = true;
+                    return true;
+                }
+                    
+                return false;
+            }
+
         }
         return false;
     }
