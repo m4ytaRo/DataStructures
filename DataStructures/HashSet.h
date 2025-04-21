@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <type_traits> //for SFINAE in class with using IsCorrectType
 
+
 namespace mutils {
     template <typename T>
     struct IsCorrectType : std::false_type {};
@@ -23,10 +24,8 @@ class HashSet
 
 private:
     static size_t quadraticProbe(size_t hash, size_t attempt, size_t capacity) {
-        return (hash + attempt * attempt) % capacity;
+        return (hash + 0.5 * attempt + 0.5 * attempt * attempt) % capacity;
     }
-
-
 
     struct Line {
         Key* key_ = nullptr;
