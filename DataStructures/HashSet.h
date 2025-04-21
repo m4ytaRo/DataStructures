@@ -35,7 +35,7 @@ private:
     };
 
     static size_t quadraticProbe(size_t hash, size_t attempt, size_t capacity) {
-        return (hash + 0.5 * attempt + 0.5 * attempt * attempt) % capacity;
+        return (static_cast<size_t>(hash + 0.5 * attempt + 0.5 * attempt * attempt)) % capacity;
     }
 
     struct Line {
