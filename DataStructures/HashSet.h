@@ -57,11 +57,11 @@ public:
 
     size_t getNextSize() {
         for (const size_t i : smallPrimes) {
-            if (i >= size_)
+            if (i > size_)
                 return i;
         }
         for (const size_t i : largePrimes) {
-            if (i >= size_)
+            if (i > size_)
                 return i;
         }
         if (size_ > (std::numeric_limits<size_t>::max() - 1) / 2)
@@ -70,7 +70,7 @@ public:
     }
 
     HashSet() : size_(100), table_(new Line[100]) {};
-    HashSet(size_t size, bool makePrime = false) : size_(size) {
+    HashSet(size_t size, bool makePrime = true) : size_(size) {
         if (makePrime)
             size_ = getNextSize();
         table_ = new Line[size_];
