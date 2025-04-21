@@ -67,6 +67,7 @@ private:
         void goToNextValid() {
             while (index_ < size_) {
                 if (table_[index_].key_ && !table_[index_].isDeleted_)
+                    break;
                 ++index_;
             }
         }
@@ -204,6 +205,13 @@ public:
         throw std::runtime_error("Unexpected error while inserting element");
         return false;
 
+    }
+
+    Iterator begin() {
+        return Iterator(table_, 0, size_);
+    }    
+    Iterator end() {
+        return Iterator(table_, size_, size_);
     }
 };
 
