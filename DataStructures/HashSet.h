@@ -42,6 +42,40 @@ private:
         Key* key_ = nullptr;
         bool isDeleted_ = false;
     };
+
+    class Iterator {
+    public:
+        Iterator(Line* table, size_t index, size_t size) : table_(table), index_(index), size_(size) {
+            goToNextValid();
+        }
+
+        Key& operator* () {
+            return *table_[index_].key_;
+        }
+
+        Iterator& operator++() {
+            index_++;
+            goToNextValid();
+            return *this;
+        }
+
+        bool operator!=(const Iterator& other) const {
+            return index_ != other.index_ || table_ != other.table_;
+        }
+
+    private:
+        void goToNextValid() {
+            while (index_ < size_) {
+                if (table_[index_].key_ && !table_[index_].isDeleted_)
+                ++index_;
+            }
+        }
+        size_t index_;
+        size_t size_;
+        Line* table_;
+
+    };
+
     size_t size_;
     size_t number_;
     Line* table_;
