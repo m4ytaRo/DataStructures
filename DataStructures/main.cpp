@@ -5,6 +5,7 @@
 int main() {
     HashSet<double> hashSet (100);
     std::cout << hashSet.getSize();
+    hashSet.insert(0.1);
     for (auto i : hashSet) {
         std::cout << i;
     }
