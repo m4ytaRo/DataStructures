@@ -20,9 +20,9 @@ int main() {
     std::cout << hashSet[0.6] << '\n';
     //hashSet.insert(dist(gen));
 
-
-    for (auto i : hashSet) {
-        std::cout << i << '\n';
-    }
+    std::cout << hashSet;
+    //for (auto i : hashSet) {
+    //    std::cout << i << '\n';
+    //}
     return 0;
 }

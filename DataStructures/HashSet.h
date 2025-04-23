@@ -243,7 +243,30 @@ public:
     Iterator end() {
         return Iterator(table_, size_, size_);
     }
+
+    Iterator begin() const {
+        return Iterator(table_, 0, size_);
+    }
+    Iterator end() const {
+        return Iterator(table_, size_, size_);
+    }
+
+    Iterator cbegin() const {
+        return begin();
+    }
+    Iterator cend() const {
+        return end();
+    }
+    
 };
+
+template <typename Key, typename = std::enable_if_t<mutils::IsCorrectType<Key>::value>>
+std::ostream& operator<<(std::ostream& out, const HashSet<Key>& obj) {
+    for (auto i : obj) {
+        out << i << '\n';
+    }
+    return out;
+}
 
 
 #endif
