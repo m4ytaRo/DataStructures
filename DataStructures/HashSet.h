@@ -5,7 +5,7 @@
 #include <type_traits> //for SFINAE in class with using IsCorrectType
 #include <limits> 
 
-
+#include <unordered_map>
 
 namespace mutils {
     template <typename T>
@@ -235,6 +235,13 @@ public:
 
         }
         return false;
+    }
+
+    void printAllWithSameHash(const HashSet& set) {
+        std::unordered_map<size_t, T> map;
+        for (auto i : set) {
+            const size_t initialHash = HashSet.calculateHash(i.key_, size_);
+        }
     }
 
     Iterator begin() {
