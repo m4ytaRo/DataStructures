@@ -4,7 +4,7 @@
 #include <stdexcept>
 #include <type_traits> //for SFINAE in class with using IsCorrectType
 #include <limits> 
-
+#include <iostream>
 #include <unordered_map>
 
 namespace mutils {
@@ -25,7 +25,7 @@ class HashSet
 {
 
 private:
-    static constexpr float LOAD_FACTOR = 0.75f;
+    static constexpr float LOAD_FACTOR = 0.7f;
     static constexpr unsigned short int smallPrimes[] = {
         5, 11, 17, 23, 37, 53, 79, 97, 131, 193,
         257, 389, 521, 769, 1031, 1543, 2053, 3079,
@@ -160,6 +160,7 @@ public:
                 }
                 if (!flagPositionFound) { //if we didnt find position for at least one object, we need to rehash
                     flagSuccessfullyTransitioned = false;
+                    delete[] newTable;
                     break;
                 }
             }
@@ -237,11 +238,26 @@ public:
         return false;
     }
 
-    void printAllWithSameHash(const HashSet& set) {
-        std::unordered_map<size_t, T> map;
+    void printAllWithSameHash(std::ostream& out, const HashSet& set) {
+        std::unordered_map<size_t, std::vector<Key>> map;
         for (auto i : set) {
-            const size_t initialHash = HashSet.calculateHash(i.key_, size_);
+            const size_t initialHash = calculateHash(i, size_);
+
+            if (map.find(initialHash) == map.end()) {
+                map.insert({ initialHash, std::vector<Key> {i} });
+            }
+            else {
+                map[initialHash].push_back(i);
+            }
         }
+        for ( auto i : map) {
+            out << i.first << " : ";
+            for (auto j : i.second) {
+                out << j << ", ";
+            }
+            std::cout << '\n';
+        }
+        
     }
 
     Iterator begin() {

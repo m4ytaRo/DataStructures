@@ -13,6 +13,15 @@ int main() {
     std::cout << hashSet.getSize() << '\n';
     hashSet.insert(dist(gen));
     hashSet.insert(dist(gen));
+    hashSet.insert(dist(gen));
+    hashSet.insert(dist(gen));
+    hashSet.insert(dist(gen));
+    hashSet.insert(dist(gen));
+    hashSet.insert(dist(gen));
+    hashSet.insert(dist(gen));
+    hashSet.insert(dist(gen));
+    hashSet.insert(dist(gen));
+    hashSet.insert(dist(gen));
     hashSet.insert(0.6);
     std::cout << hashSet[0.6] << '\n';
     std::cout << hashSet[0.5]<< '\n';
@@ -24,5 +33,6 @@ int main() {
     //for (auto i : hashSet) {
     //    std::cout << i << '\n';
     //}
+    hashSet.printAllWithSameHash(std::cout, hashSet);
     return 0;
 }
