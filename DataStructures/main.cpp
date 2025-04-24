@@ -11,21 +11,24 @@ int main() {
     std::uniform_real_distribution<> dist(0.0, 1.0);
 
     std::cout << hashSet.getSize() << '\n';
-    hashSet.insert(dist(gen));
-    hashSet.insert(dist(gen));
-    hashSet.insert(dist(gen));
-    hashSet.insert(dist(gen));
-    hashSet.insert(dist(gen));
-    hashSet.insert(dist(gen));
-    hashSet.insert(dist(gen));
-    hashSet.insert(dist(gen));
-    hashSet.insert(dist(gen));
-    hashSet.insert(dist(gen));
-    hashSet.insert(dist(gen));
+    //hashSet.insert(dist(gen));
+    //hashSet.insert(dist(gen));
+    //hashSet.insert(dist(gen));
+    //hashSet.insert(dist(gen));
+    //hashSet.insert(dist(gen));
+    //hashSet.insert(dist(gen));
+    //hashSet.insert(dist(gen));
+    //hashSet.insert(dist(gen));
+    //hashSet.insert(dist(gen));
+    //hashSet.insert(dist(gen));
+    //hashSet.insert(dist(gen));
     hashSet.insert(0.6);
     std::cout << hashSet[0.6] << '\n';
     std::cout << hashSet[0.5]<< '\n';
     hashSet.remove(0.6);
+    std::cout << hashSet[0.6] << '\n';
+    //hashSet.remove(0.6);
+    hashSet.insert(0.6);
     std::cout << hashSet[0.6] << '\n';
     //hashSet.insert(dist(gen));
 

@@ -14,7 +14,7 @@ namespace mutils {
     };
 
     template <>
-    struct Hasher < double > {
+    struct Hasher <double> {
         size_t operator() (double value) {
             return static_cast<size_t> (value * 10000);
         }
@@ -211,8 +211,14 @@ public:
             size_t pos = initialHash;
             for (int i = 0; i < size_; ++i) {
                 pos = quadraticProbe(pos, i, size_);
-                if (table_[pos].key_ && keysEqual(*table_[pos].key_, key))
+                if (table_[pos].key_ && keysEqual(*table_[pos].key_, key)) {
+                    if (table_[pos].isDeleted_) {
+                        table_[pos].isDeleted_ = false;
+                        return true;
+                    }
                     return false;
+                }
+                    
                 if (!table_[pos].key_ || table_[pos].isDeleted_) {
                     if (table_[pos].isDeleted_) {
                         delete table_[pos].key_;
