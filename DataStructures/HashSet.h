@@ -4,7 +4,7 @@
 #include <stdexcept>
 #include <limits> 
 #include <iostream>
-#include <unordered_map>
+#include <unordered_map> //just for my study task
 
 namespace mutils {
     template <typename T>
@@ -32,7 +32,7 @@ namespace mutils {
     struct Comparator<double> {
         bool operator() (double value1, double value2) const noexcept {
             const double epsilon = 1e-9;
-            return (value1 - value2) < epsilon;
+            return std::abs(value1 - value2) < epsilon;
         }
     };
 }
@@ -40,8 +40,7 @@ namespace mutils {
 template
 <typename Key,
     typename Hash = mutils::Hasher<Key>,
-    typename Comparator = mutils::Comparator<Key>
->
+    typename Comparator = mutils::Comparator<Key>>
 class HashSet
 {
 
@@ -112,7 +111,7 @@ private:
 public:
 
     size_t calculateHash(double value, size_t capacity) {
-        return hasher_(value) * capacity;
+        return hasher_(value) % capacity;
     }
 
     bool keysEqual(const Key& a, const Key& b) const {
@@ -212,7 +211,7 @@ public:
             size_t pos = initialHash;
             for (int i = 0; i < size_; ++i) {
                 pos = quadraticProbe(pos, i, size_);
-                if (table_[pos].key_ && *table_[pos].key_ == key)
+                if (table_[pos].key_ && keysEqual(*table_[pos].key_, key))
                     return false;
                 if (!table_[pos].key_ || table_[pos].isDeleted_) {
                     if (table_[pos].isDeleted_) {
@@ -238,7 +237,7 @@ public:
         size_t pos = initialHash;
         for (size_t i = 0; i < size_; ++i) {
             pos = quadraticProbe(pos, i, size_);
-            if (table_[pos].key_ && key == *table_[pos].key_) {
+            if (table_[pos].key_ && keysEqual(*table_[pos].key_, key)) {
                 if (!table_[pos].isDeleted_)
                     return true;
                 return false;
@@ -253,7 +252,7 @@ public:
         size_t pos = initialHash;
         for (size_t i = 0; i < size_; ++i) {
             pos = quadraticProbe(pos, i, size_);
-            if (table_[pos].key_ && key == *table_[pos].key_) {
+            if (table_[pos].key_ && keysEqual(*table_[pos].key_, key)) {
                 if (!table_[pos].isDeleted_) {
                     table_[pos].isDeleted_ = true;
                     return true;
@@ -283,7 +282,7 @@ public:
             for (auto j : i.second) {
                 out << j << ", ";
             }
-            std::cout << '\n';
+            out << '\n';
         }
 
     }
@@ -301,14 +300,6 @@ public:
     Iterator end() const {
         return Iterator(table_, size_, size_);
     }
-
-    Iterator cbegin() const {
-        return begin();
-    }
-    Iterator cend() const {
-        return end();
-    }
-
 };
 
 template     <typename Key, typename Hash = mutils::Hasher<Key>, typename Comparator = mutils::Comparator<Key>>
