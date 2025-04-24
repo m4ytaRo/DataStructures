@@ -160,7 +160,6 @@ public:
                 }
                 if (!flagPositionFound) { //if we didnt find position for at least one object, we need to rehash
                     flagSuccessfullyTransitioned = false;
-                    delete[] newTable;
                     break;
                 }
             }
