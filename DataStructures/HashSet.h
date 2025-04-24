@@ -2,25 +2,46 @@
 #define HASHSET_H
 
 #include <stdexcept>
-#include <type_traits> //for SFINAE in class with using IsCorrectType
 #include <limits> 
 #include <iostream>
 #include <unordered_map>
 
 namespace mutils {
     template <typename T>
-    struct IsCorrectType : std::false_type {};
+    struct Hasher {
+        //base 
+        //due to size_t operator()(const T&) const = delete; we will see comilation error if template is not specialized
+    };
 
     template <>
-    struct IsCorrectType<double> : std::true_type {};
+    struct Hasher < double > {
+        size_t operator() (double value) {
+            return static_cast<size_t> (value * 10000);
+        }
+        //10000 is arbitrary
+    };
 
-    //It was not my task
-    //template <>
-    //struct IsCorrectType<std::string> : std::true_type {};
+    template <typename T>
+    struct Comparator {
+        bool operator() (const T& value1, const T& value2) const noexcept {
+            return value1 == value2;
+        }
+    };
+
+    template <>
+    struct Comparator<double> {
+        bool operator() (double value1, double value2) const noexcept {
+            const double epsilon = 1e-9;
+            return (value1 - value2) < epsilon;
+        }
+    };
 }
 
-
-template <typename Key, typename = std::enable_if_t<mutils::IsCorrectType<Key>::value>>
+template
+<typename Key,
+    typename Hash = mutils::Hasher<Key>,
+    typename Comparator = mutils::Comparator<Key>
+>
 class HashSet
 {
 
@@ -145,7 +166,7 @@ public:
                 size_t pos = initialHash;
                 bool flagPositionFound = false;
                 for (size_t j = 0; j < newSize; ++j) {  //trying to calculate hash exactly newSize times
-                    
+
                     pos = quadraticProbe(pos, j, newSize);
                     if (!newTable[pos].key_ || newTable[pos].isDeleted_) {
                         if (newTable[pos].isDeleted_) {
@@ -214,7 +235,7 @@ public:
                     return true;
                 return false;
             }
-                
+
         }
         return false;
     }
@@ -229,7 +250,7 @@ public:
                     table_[pos].isDeleted_ = true;
                     return true;
                 }
-                    
+
                 return false;
             }
 
@@ -249,19 +270,19 @@ public:
                 map[initialHash].push_back(i);
             }
         }
-        for ( auto i : map) {
+        for (auto i : map) {
             out << i.first << " : ";
             for (auto j : i.second) {
                 out << j << ", ";
             }
             std::cout << '\n';
         }
-        
+
     }
 
     Iterator begin() {
         return Iterator(table_, 0, size_);
-    }    
+    }
     Iterator end() {
         return Iterator(table_, size_, size_);
     }
@@ -279,10 +300,10 @@ public:
     Iterator cend() const {
         return end();
     }
-    
+
 };
 
-template <typename Key, typename = std::enable_if_t<mutils::IsCorrectType<Key>::value>>
+template     <typename Key, typename Hash = mutils::Hasher<Key>, typename Comparator = mutils::Comparator<Key>>
 std::ostream& operator<<(std::ostream& out, const HashSet<Key>& obj) {
     for (auto i : obj) {
         out << i << '\n';
