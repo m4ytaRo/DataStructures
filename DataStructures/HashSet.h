@@ -46,6 +46,10 @@ class HashSet
 {
 
 private:
+
+    Hash hasher_;
+    Comparator comparator_;
+
     static constexpr float LOAD_FACTOR = 0.7f;
     static constexpr unsigned short int smallPrimes[] = {
         5, 11, 17, 23, 37, 53, 79, 97, 131, 193,
@@ -107,8 +111,12 @@ private:
 
 public:
 
-    static size_t calculateHash(double value, size_t capacity) {
-        return value * capacity;
+    size_t calculateHash(double value, size_t capacity) {
+        return hasher_(value) * capacity;
+    }
+
+    bool keysEqual(const Key& a, const Key& b) const {
+        return comparator_(a, b);
     }
 
     size_t getNextSize(size_t size) {
