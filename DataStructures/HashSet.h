@@ -16,9 +16,9 @@ namespace mutils {
     template <>
     struct Hasher <double> {
         size_t operator() (double value) {
-            return static_cast<size_t> (value * 10000);
+            return static_cast<size_t> (value * 12289);
         }
-        //10000 is arbitrary
+        //12289 is prime
     };
 
     template <typename T>

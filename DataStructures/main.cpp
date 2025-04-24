@@ -29,6 +29,9 @@ int main() {
     std::cout << hashSet[0.6] << '\n';
     //hashSet.remove(0.6);
     hashSet.insert(0.6);
+    hashSet.insert(0.5);
+    hashSet.insert(0.1);
+    hashSet.insert(0.2);
     std::cout << hashSet[0.6] << '\n';
     //hashSet.insert(dist(gen));
 
