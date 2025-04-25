@@ -5,23 +5,24 @@
 
 int main() {
     HashSet<double> hashSet (1);
+    //HashSet<size_t> hashSet (1); //compilation error
 
     std::random_device rd;                      
     std::mt19937 gen(rd());                     
     std::uniform_real_distribution<> dist(0.0, 1.0);
 
     std::cout << hashSet.getSize() << '\n';
-    //hashSet.insert(dist(gen));
-    //hashSet.insert(dist(gen));
-    //hashSet.insert(dist(gen));
-    //hashSet.insert(dist(gen));
-    //hashSet.insert(dist(gen));
-    //hashSet.insert(dist(gen));
-    //hashSet.insert(dist(gen));
-    //hashSet.insert(dist(gen));
-    //hashSet.insert(dist(gen));
-    //hashSet.insert(dist(gen));
-    //hashSet.insert(dist(gen));
+    hashSet.insert(dist(gen));
+    hashSet.insert(dist(gen));
+    hashSet.insert(dist(gen));
+    hashSet.insert(dist(gen));
+    hashSet.insert(dist(gen));
+    hashSet.insert(dist(gen));
+    hashSet.insert(dist(gen));
+    hashSet.insert(dist(gen));
+    hashSet.insert(dist(gen));
+    hashSet.insert(dist(gen));
+    hashSet.insert(dist(gen));
     hashSet.insert(0.6);
     std::cout << hashSet[0.6] << '\n';
     std::cout << hashSet[0.5]<< '\n';
@@ -39,6 +40,6 @@ int main() {
     //for (auto i : hashSet) {
     //    std::cout << i << '\n';
     //}
-    hashSet.printAllWithSameHash(std::cout, hashSet);
+    hashSet.printAllWithSameHash(std::cout, 5);
     return 0;
 }

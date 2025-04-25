@@ -4,7 +4,6 @@
 #include <stdexcept>
 #include <limits> 
 #include <iostream>
-#include <unordered_map> //just for my study task
 
 namespace mutils {
     template <typename T>
@@ -110,7 +109,7 @@ private:
 
 public:
 
-    size_t calculateHash(double value, size_t capacity) {
+    size_t calculateHash(const Key& value, size_t capacity) {
         return hasher_(value) % capacity;
     }
 
@@ -271,26 +270,20 @@ public:
         return false;
     }
 
-    void printAllWithSameHash(std::ostream& out, const HashSet& set) {
-        std::unordered_map<size_t, std::vector<Key>> map;
-        for (auto i : set) {
-            const size_t initialHash = calculateHash(i, size_);
-
-            if (map.find(initialHash) == map.end()) {
-                map.insert({ initialHash, std::vector<Key> {i} });
-            }
-            else {
-                map[initialHash].push_back(i);
-            }
+    void printAllWithSameHash(std::ostream& out, size_t initialHash) {
+        out << "All numbers for hash " << initialHash << ":\n";
+        size_t pos = initialHash;
+        bool anyFound = false;
+        for (size_t i = 0; i < size_; ++i) {
+            pos = quadraticProbe(pos, i, size_);
+            if (!table_[pos].key_)
+                return;
+            out << *table_[pos].key_ << ' ';
         }
-        for (auto i : map) {
-            out << i.first << " : ";
-            for (auto j : i.second) {
-                out << j << ", ";
-            }
-            out << '\n';
-        }
-
+        if (!anyFound)
+            out << "No numbers found!";
+        out << '\n';
+        
     }
 
     Iterator begin() {
@@ -308,7 +301,7 @@ public:
     }
 };
 
-template     <typename Key, typename Hash = mutils::Hasher<Key>, typename Comparator = mutils::Comparator<Key>>
+template <typename Key, typename Hash = mutils::Hasher<Key>, typename Comparator = mutils::Comparator<Key>>
 std::ostream& operator<<(std::ostream& out, const HashSet<Key>& obj) {
     for (auto i : obj) {
         out << i << '\n';
