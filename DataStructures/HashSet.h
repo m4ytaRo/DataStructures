@@ -277,8 +277,9 @@ public:
         for (size_t i = 0; i < size_; ++i) {
             pos = quadraticProbe(pos, i, size_);
             if (!table_[pos].key_)
-                return;
+                break;
             out << *table_[pos].key_ << ' ';
+            anyFound = true;
         }
         if (!anyFound)
             out << "No numbers found!";
