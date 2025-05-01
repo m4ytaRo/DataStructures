@@ -209,6 +209,9 @@ public:
             }
 
         }
+        for (size_t i = 0; i < newSize; ++i) {
+            newTable[i].key_ = nullptr;
+        }
         delete[] newTable;
         throw std::runtime_error("Unexpected error while rehashing\n");
     }
