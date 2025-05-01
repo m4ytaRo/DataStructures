@@ -284,7 +284,6 @@ public:
         if (!anyFound)
             out << "No numbers found!";
         out << '\n';
-        
     }
 
     Iterator begin() {
