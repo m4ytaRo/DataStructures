@@ -254,12 +254,12 @@ public:
         size_t pos = initialHash;
         for (size_t i = 0; i < size_; ++i) {
             pos = quadraticProbe(pos, i, size_);
-            if (table_[pos].key_ && keysEqual(*table_[pos].key_, key)) {
+            if (table_[pos].key_ && keysEqual(*table_[pos].key_, key) || table_[pos].isDeleted_) {
                 if (!table_[pos].isDeleted_) {
+                    delete table_[pos].key_;
                     table_[pos].isDeleted_ = true;
                     return true;
                 }
-
                 return false;
             }
 
