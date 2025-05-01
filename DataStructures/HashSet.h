@@ -156,13 +156,15 @@ public:
 
     void rehash() {
         Line* newTable = nullptr;
-        for (int attempt = 0; attempt < 5; ++attempt) {
-            //global attempts to rehash
-            size_t newSize = size_;
-            newSize = getNextSize(newSize);
+        size_t newSize = size_;
+        for (int attempt = 0; attempt < 5; ++attempt) {//global attempts to rehash
+            if (attempt > 0)
+                for (size_t i = 0; i < newSize; ++i) {
+                        newTable[i].key_ = nullptr; //because old table still contains elements
+                }
             delete[] newTable;
+            newSize = getNextSize(newSize);
             newTable = new Line[newSize];
-
             bool flagSuccessfullyTransitioned = true;
 
             for (int i = 0; i < size_; ++i) { //going through all previous table
@@ -174,12 +176,8 @@ public:
                 for (size_t j = 0; j < newSize; ++j) {  //trying to calculate hash exactly newSize times
 
                     pos = quadraticProbe(pos, j, newSize);
-                    if (!newTable[pos].key_ || newTable[pos].isDeleted_) {
-                        if (newTable[pos].isDeleted_) {
-                            delete newTable[pos].key_;
-                        }
-                        newTable[pos].key_ = new Key(*table_[i].key_);
-                        newTable[pos].isDeleted_ = false;
+                    if (!newTable[pos].key_) {
+                        newTable[pos].key_ = table_[i].key_;
                         flagPositionFound = true;
                         break;
                     }
@@ -191,6 +189,19 @@ public:
                 }
             }
             if (flagSuccessfullyTransitioned) {
+                /*
+                    if we moved all elements to new table, it means that we need to delete
+                    all elements in old table, except elements we moved to new table (it means
+                    we want to delete all values with flag isDeleted_ = true)
+                    Thats why we need to assign nullptr to all old table key_ values 
+                    except values with isDeleted_ = true
+
+                */
+               
+                for (size_t i = 0; i < size_; ++i) {
+                    if (!table_[i].isDeleted_)
+                        table_[i].key_ = nullptr;
+                }
                 delete[] table_;
                 table_ = newTable;
                 size_ = newSize;
