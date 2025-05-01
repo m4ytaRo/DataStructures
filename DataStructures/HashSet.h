@@ -174,7 +174,10 @@ public:
                 for (size_t j = 0; j < newSize; ++j) {  //trying to calculate hash exactly newSize times
 
                     pos = quadraticProbe(pos, j, newSize);
-                    if (!newTable[pos].key_) {
+                    if (!newTable[pos].key_ || newTable[pos].isDeleted_) {
+                        if (newTable[pos].isDeleted_) {
+                            delete newTable[pos].key_;
+                        }
                         newTable[pos].key_ = new Key(*table_[i].key_);
                         newTable[pos].isDeleted_ = false;
                         flagPositionFound = true;
@@ -254,12 +257,12 @@ public:
         size_t pos = initialHash;
         for (size_t i = 0; i < size_; ++i) {
             pos = quadraticProbe(pos, i, size_);
-            if (table_[pos].key_ && keysEqual(*table_[pos].key_, key) || table_[pos].isDeleted_) {
+            if (table_[pos].key_ && keysEqual(*table_[pos].key_, key)) {
                 if (!table_[pos].isDeleted_) {
-                    delete table_[pos].key_;
                     table_[pos].isDeleted_ = true;
                     return true;
                 }
+
                 return false;
             }
 
